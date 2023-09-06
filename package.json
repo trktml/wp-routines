@@ -4,6 +4,7 @@
   "description": "Whatsapp cron reminder",
   "main": "app.ts",
   "scripts": {
+    "start": "swc ./src -d dist && cls && node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -14,5 +15,11 @@
     "bot"
   ],
   "author": "Tarık Temel",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "whatsapp-web.js": "^1.22.1"
+  },
+  "devDependencies": {
+    "@swc/cli": "^0.1.62"
+  }
 }
