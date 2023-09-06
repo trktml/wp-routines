@@ -1,4 +1,4 @@
-import qrcode from 'qrcode-terminal';
+const qrcode = require('qrcode-terminal');
 import { Client } from "whatsapp-web.js";
 
 const client = new Client({
