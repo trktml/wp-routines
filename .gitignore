@@ -132,3 +132,5 @@ dist
 package-lock.json
 pnpm-lock.yaml
 bun.lockb
+
+.wwebjs_cache
