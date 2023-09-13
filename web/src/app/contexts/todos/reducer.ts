@@ -1,4 +1,3 @@
-'use client';
 import { TodoItemProps, TodosAction, todosActionKind } from './type';
 
 export const todosReducer = (todos: TodoItemProps[], action: TodosAction) => {

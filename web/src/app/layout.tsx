@@ -1,11 +1,11 @@
 import './globals.css';
-import 'bootstrap/dist/css/bootstrap.css';
 import type { Metadata } from 'next';
 import Head from 'next/head';
-import Script from 'next/script';
 import { Nunito } from 'next/font/google';
+import { TodosProvider } from './contexts/todos';
 
 const nunito = Nunito({
+    subsets: ['latin'],
     weight: 'variable',
     display: 'swap',
 });
@@ -29,12 +29,7 @@ export default function RootLayout({
                 />
             </Head>
             <body className={nunito.className}>
-                {children}
-                <Script
-                    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"
-                    integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa"
-                    crossOrigin="anonymous"
-                ></Script>
+                <TodosProvider>{children}</TodosProvider>
             </body>
         </html>
     );
