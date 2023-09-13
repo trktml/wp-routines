@@ -4,10 +4,10 @@
 
 ```sh
 # Install dependencies
-npm install
+bun i
 
 # Run the bot
-npm start
+bun start
 ```
 
 ## Contributing

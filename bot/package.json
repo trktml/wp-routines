@@ -1,0 +1,21 @@
+{
+  "name": "wp-routines",
+  "version": "1.0.0",
+  "author": "Tarık Temel",
+  "main": "app.ts",
+  "description": "Whatsapp cron reminder",
+  "keywords": [
+    "whatsapp",
+    "routines",
+    "bot"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "start": "bun run src/app.ts > bun.out",
+    "swc": "swc ./src -d dist && node dist/app.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "@wppconnect-team/wppconnect": "^1.28.0"
+  }
+}
