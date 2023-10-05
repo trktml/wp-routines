@@ -2,7 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import Head from 'next/head';
 import { Nunito } from 'next/font/google';
-import { TodosProvider } from './contexts/todos';
+import { CronsProvider } from './contexts/crons';
 
 const nunito = Nunito({
     subsets: ['latin'],
@@ -29,7 +29,7 @@ export default function RootLayout({
                 />
             </Head>
             <body className={nunito.className}>
-                <TodosProvider>{children}</TodosProvider>
+                <CronsProvider>{children}</CronsProvider>
             </body>
         </html>
     );

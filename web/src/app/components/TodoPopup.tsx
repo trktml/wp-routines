@@ -1,17 +1,22 @@
 'use client';
 import clsx from 'clsx';
+import Datepicker from 'tailwind-datepicker-react';
+import { Fragment } from 'react';
 import { FormEvent, useState } from 'react';
-import { useTodosDispatch } from '../contexts/todos';
-import { TodoItemProps, todosActionKind } from '../contexts/todos/type';
+import { useCronsDispatch } from '../contexts/crons';
+import { CronsItemProps, cronsActionKind } from '../contexts/crons/type';
 
 interface TodoPopupProps {
     onClosePopup: () => void;
     index: number | null;
-    data: TodoItemProps;
+    data: CronsItemProps;
 }
 
 const TodoPopup = ({ onClosePopup, index, data }: TodoPopupProps) => {
-    const todosDispatch = useTodosDispatch()!;
+    function classNames(...classes: any) {
+        return classes.filter(Boolean).join(' ');
+    }
+    const dispatch = useCronsDispatch()!;
     const [todoValue, setTodoValue] = useState(data?.value || '');
 
     const handleEditTodoItem = (event: FormEvent<HTMLFormElement>) => {
@@ -19,8 +24,8 @@ const TodoPopup = ({ onClosePopup, index, data }: TodoPopupProps) => {
         onClosePopup();
 
         if (index === null) {
-            todosDispatch({
-                type: todosActionKind.ADD,
+            dispatch({
+                type: cronsActionKind.ADD,
                 payload: {
                     value: todoValue,
                 },
@@ -29,14 +34,50 @@ const TodoPopup = ({ onClosePopup, index, data }: TodoPopupProps) => {
             return;
         }
 
-        todosDispatch({
-            type: todosActionKind.EDIT,
+        dispatch({
+            type: cronsActionKind.EDIT,
             payload: {
                 index,
                 value: todoValue,
                 isChecked: data.isChecked,
             },
         });
+    };
+
+    const [show, setShow] = useState<boolean>(false);
+    const handleChange = (selectedDate: Date) => {
+        console.log(selectedDate);
+    };
+    const handleClose = (state: boolean) => {
+        setShow(state);
+    };
+
+    const options = {
+        title: 'Select a date',
+        autoHide: true,
+        todayBtn: false,
+        clearBtn: true,
+        maxDate: new Date('2030-01-01'),
+        minDate: new Date('1950-01-01'),
+        theme: {
+            background: 'bg-gray-700 dark:bg-gray-800',
+            todayBtn: '',
+            clearBtn: '',
+            icons: '',
+            text: '',
+            disabledText: 'bg-gray-400',
+            input: '',
+            inputIcon: '',
+            selected: '',
+        },
+        icons: {
+            // () => ReactElement | JSX.Element
+            prev: () => <span>prev</span>,
+            next: () => <span>next</span>,
+        },
+        datepickerClassNames: 'top-12',
+        defaultDate: new Date(data?.date) ?? new Date().toUTCString(),
+        language: 'en',
     };
 
     return (
@@ -61,11 +102,18 @@ const TodoPopup = ({ onClosePopup, index, data }: TodoPopupProps) => {
                                 'text-gray-900',
                                 'focus:border-blue-500 focus:ring-blue-500'
                             )}
-                            placeholder="Add Todos"
+                            placeholder="Add"
                             value={todoValue}
                             onChange={(event) =>
                                 setTodoValue(event.target.value)
                             }
+                        />
+                        <Datepicker
+                            options={options}
+                            onChange={handleChange}
+                            show={show}
+                            setShow={handleClose}
+                            classNames="mt-5"
                         />
                     </div>
 
@@ -78,9 +126,9 @@ const TodoPopup = ({ onClosePopup, index, data }: TodoPopupProps) => {
                         <button
                             type="submit"
                             className={clsx(
-                                'rounded-lg bg-emerald-700 px-5 py-2.5',
+                                'rounded-lg bg-gray-700 px-5 py-2.5',
                                 'text-center font-medium text-white',
-                                'hover:bg-emerald-800 focus:outline-none focus:ring-4 focus:ring-emerald-300'
+                                'hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300'
                             )}
                         >
                             Save

@@ -1,8 +1,8 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { useTodos } from './contexts/todos';
-import { TodoItemProps } from './contexts/todos/type';
+import { useCrons, useCronsDispatch } from './contexts/crons';
+import { CronsItemProps, cronsActionKind } from './contexts/crons/type';
 import SearchIcon from './components/icons/SearchIcon';
 import TodoItem from './components/TodoItem';
 import Heading from './components/Heading';
@@ -11,11 +11,13 @@ import ToggleButton from './components/ToggleButton';
 
 interface TodoPopupData {
     index: number | null;
-    item: TodoItemProps;
+    item: CronsItemProps;
+    date: Date;
 }
 
 const App = () => {
-    const todos = useTodos();
+    const crons = useCrons();
+    const dispatch = useCronsDispatch();
 
     const [searchTerm, setSearchTerm] = useState('');
     const [isShowCompletedTodos, setIsShowCompletedTodos] = useState(false);
@@ -23,19 +25,35 @@ const App = () => {
         null
     );
 
-    const handleOpenTodoPopup = (index: number | null, item: TodoItemProps) => {
+    const handleOpenTodoPopup = (
+        index: number | null,
+        item: CronsItemProps
+    ) => {
         setTodoPopupData({
             index,
             item,
+            date: new Date(),
         });
     };
+
+    useEffect(() => {
+        fetch('http://localhost:3000/api/crons/get-all').then((res) => {
+            res.json().then((data) => {
+                dispatch!({
+                    payload: data ?? [],
+                    type: cronsActionKind.UPDATE,
+                });
+            });
+        });
+    }, []);
 
     const getTodoItem = (
         isShow: boolean,
         index: number,
-        item: TodoItemProps
-    ) => {
-        if (!isShow || !item.value.includes(searchTerm)) return null;
+        date: Date,
+        item: CronsItemProps
+    ) => {        
+        if (!isShow || !item.value.toString().includes(searchTerm)) return null;
 
         return (
             <TodoItem
@@ -47,6 +65,7 @@ const App = () => {
                     setTodoPopupData({
                         index,
                         item,
+                        date,
                     });
                 }}
             />
@@ -65,6 +84,17 @@ const App = () => {
 
             <div className={clsx('mx-auto w-full max-w-3xl px-4 py-6')}>
                 <Heading />
+                <input
+                    type="text"
+                    className={clsx(
+                        'w-full bg-gray-50 p-4',
+                        'rounded-lg border border-gray-300',
+                        'text-gray-900',
+                        'focus:border-blue-500 focus:ring-blue-500',
+                        'mt-10 mb-5'
+                    )}
+                    placeholder="Staring Text"
+                />
                 <div className="pt-5">
                     <div className="flex items-center gap-3">
                         <div className="relative w-full">
@@ -76,7 +106,7 @@ const App = () => {
                                     'text-gray-900',
                                     'focus:border-blue-500 focus:ring-blue-500'
                                 )}
-                                placeholder="Search Todos"
+                                placeholder="Search Cron"
                                 value={searchTerm}
                                 onChange={(event) =>
                                     setSearchTerm(event.target.value)
@@ -99,43 +129,25 @@ const App = () => {
                                 handleOpenTodoPopup(null, {
                                     value: '',
                                     isChecked: false,
+                                    date: new Date(),
                                 })
                             }
                             type="button"
                             className={clsx(
-                                'rounded-lg bg-emerald-700 px-4 py-2.5',
+                                'rounded-lg bg-gray-700 px-4 py-2.5',
                                 'font-medium text-white',
-                                'hover:bg-emerald-800 focus:outline-none focus:ring-4 focus:ring-emerald-300'
+                                'hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300'
                             )}
                         >
-                            Add&nbsp;Todos
+                            Add
                         </button>
                     </div>
                 </div>
 
                 <div className="py-3">
-                    {todos?.map((item, index) =>
-                        getTodoItem(!item.isChecked, index, item)
+                    {crons?.map((item, index) =>
+                        getTodoItem(!item.isChecked, index, item.date, item)
                     )}
-
-                    <ToggleButton
-                        onToggle={() =>
-                            setIsShowCompletedTodos(!isShowCompletedTodos)
-                        }
-                        todosAmount={
-                            todos?.filter(
-                                (item) =>
-                                    item.isChecked &&
-                                    item.value.includes(searchTerm)
-                            ).length || 0
-                        }
-                        isShow={isShowCompletedTodos}
-                    />
-
-                    {isShowCompletedTodos &&
-                        todos?.map((item, index) =>
-                            getTodoItem(item.isChecked, index, item)
-                        )}
                 </div>
             </div>
         </div>

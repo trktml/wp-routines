@@ -2,13 +2,13 @@
 import DeleteIcon from './icons/DeleteIcon';
 import EditIcon from './icons/EditIcon';
 import CheckIcon from './icons/CheckIcon';
-import { TodoItemProps, todosActionKind } from '../contexts/todos/type';
-import { useTodosDispatch } from '../contexts/todos';
+import { CronsItemProps, cronsActionKind } from '../contexts/crons/type';
+import { useCronsDispatch } from '../contexts/crons';
 import clsx from 'clsx';
 
 interface TodoItemInterface {
     searchTerm: string;
-    item: TodoItemProps;
+    item: CronsItemProps;
     index: number;
     onEditTodoItem: () => void;
 }
@@ -19,11 +19,11 @@ const TodoItem = ({
     index,
     onEditTodoItem,
 }: TodoItemInterface) => {
-    const todosDispatch = useTodosDispatch()!;
+    const todosDispatch = useCronsDispatch()!;
 
     const handleRemoveTodoItem = () =>
         todosDispatch({
-            type: todosActionKind.REMOVE,
+            type: cronsActionKind.REMOVE,
             payload: {
                 index,
             },
@@ -31,7 +31,7 @@ const TodoItem = ({
 
     const handleCheckTodoItem = () =>
         todosDispatch({
-            type: todosActionKind.EDIT,
+            type: cronsActionKind.EDIT,
             payload: {
                 index,
                 value: item.value,
@@ -80,18 +80,6 @@ const TodoItem = ({
                     )}
                 >
                     <EditIcon />
-                </button>
-
-                <button
-                    onClick={handleCheckTodoItem}
-                    type="button"
-                    className={clsx(
-                        item.isChecked ? 'bg-emerald-700' : 'bg-gray-400',
-                        'flex h-10 w-10 items-center justify-center rounded-lg',
-                        'hover:bg-emerald-800 focus:outline-none focus:ring-4 focus:ring-emerald-300'
-                    )}
-                >
-                    <CheckIcon />
                 </button>
             </div>
         </div>
