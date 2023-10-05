@@ -37,7 +37,7 @@ const App = () => {
     };
 
     useEffect(() => {
-        fetch('http://localhost:3000/api/crons/get-all').then((res) => {
+        fetch('/api/crons/get-all').then((res) => {
             res.json().then((data) => {
                 dispatch!({
                     payload: data ?? [],
