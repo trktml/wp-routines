@@ -53,7 +53,7 @@ const TodoItem = ({
             )}
         >
             <span
-                className="font-normal text-gray-700"
+                className="font-normal text-black-700"
                 dangerouslySetInnerHTML={{
                     __html:
                         searchTerm !== ""
@@ -64,6 +64,10 @@ const TodoItem = ({
                             : item.value,
                 }}
             ></span>
+
+            <span className={clsx("text-gray-400 font-thin text-md")}>
+                {item.date.toString().split(' ').slice(0, 4).join(' ')}
+            </span>
 
             <div className="flex gap-2">
                 <button
