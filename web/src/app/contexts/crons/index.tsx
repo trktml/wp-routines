@@ -10,7 +10,7 @@ export const useCrons = () => useContext(CronsContext);
 export const useCronsDispatch = () => useContext(CronsDispatch);
 
 const initialCrons: CronsItemProps[] = [
-    { value: 'WP-Routines', isChecked: true, date: new Date() },
+    { id: 1, value: 'WP-Routines', isChecked: true, date: new Date() },
 ];
 
 export function CronsProvider({ children }: { children: React.ReactNode }) {
