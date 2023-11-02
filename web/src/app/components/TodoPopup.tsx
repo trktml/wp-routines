@@ -8,44 +8,78 @@ import { CronsItemProps, cronsActionKind } from '../contexts/crons/type';
 
 interface TodoPopupProps {
     onClosePopup: () => void;
-    index: number | null;
     data: CronsItemProps;
 }
 
-const TodoPopup = ({ onClosePopup, index, data }: TodoPopupProps) => {
+const TodoPopup = ({ onClosePopup, data }: TodoPopupProps) => {
     function classNames(...classes: any) {
         return classes.filter(Boolean).join(' ');
     }
     const dispatch = useCronsDispatch()!;
     const [todoValue, setTodoValue] = useState(data?.value || '');
+    const [selectedDate, setSelectedDate] = useState(new Date());
 
     const handleEditTodoItem = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         onClosePopup();
 
-        if (index === null) {
-            dispatch({
-                type: cronsActionKind.ADD,
-                payload: {
-                    value: todoValue,
-                },
+        if (data.id === 0) {
+            fetch(
+                '/api/crons/add' +
+                '?value=' +
+                todoValue +
+                '&date=' +
+                selectedDate.toUTCString()
+            ).then(async (res) => {
+                let result = await res.json();
+                console.log(result);
+
+                if (result) {
+                    dispatch({
+                        type: cronsActionKind.ADD,
+                        payload: {
+                            id: result.id,
+                            value: todoValue,
+                            isChecked: false,
+                            date: selectedDate,
+                        },
+                    });
+                }
             });
 
             return;
         }
 
-        dispatch({
-            type: cronsActionKind.EDIT,
-            payload: {
-                index,
-                value: todoValue,
-                isChecked: data.isChecked,
-            },
+        // Edit
+        fetch(
+            '/api/crons/edit' +
+            '?id=' +
+            data.id +
+            '&value=' +
+            todoValue +
+            '&date=' +
+            selectedDate.toUTCString()
+        ).then(async (res) => {
+            let result = await res.json();
+            console.log(result);
+
+            if (result) {
+                dispatch({
+                    type: cronsActionKind.EDIT,
+                    payload: {
+                        id: data.id,
+                        value: todoValue,
+                        date: selectedDate,
+                        isChecked: data.isChecked,
+                    },
+                });
+            }
         });
     };
 
     const [show, setShow] = useState<boolean>(false);
     const handleChange = (selectedDate: Date) => {
+        setSelectedDate(selectedDate);
         console.log(selectedDate);
     };
     const handleClose = (state: boolean) => {

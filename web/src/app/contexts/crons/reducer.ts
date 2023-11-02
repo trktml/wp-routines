@@ -6,8 +6,10 @@ export const cronsReducer = (crons: CronsItemProps[], action: cronsAction) => {
             return [
                 ...crons,
                 {
+                    id: action.payload.id,
                     value: action.payload.value,
                     isChecked: false,
+                    date: action.payload.date,
                 } as CronsItemProps,
             ];
         }
@@ -15,17 +17,18 @@ export const cronsReducer = (crons: CronsItemProps[], action: cronsAction) => {
         case cronsActionKind.REMOVE: {
             return crons.filter(
                 (_: CronsItemProps, index: number) =>
-                    index !== action.payload.index
+                    _.id !== action.payload.id
             );
         }
 
         case cronsActionKind.EDIT: {
             return crons.map((item: CronsItemProps, index: number) =>
-                index === action.payload.index
+                item.id === action.payload.id
                     ? ({
-                          value: action.payload.value,
-                          isChecked: action.payload.isChecked,
-                      } as CronsItemProps)
+                        value: action.payload.value,
+                        isChecked: action.payload.isChecked,
+                        date: action.payload.date,
+                    } as CronsItemProps)
                     : item
             );
         }

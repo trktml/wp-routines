@@ -9,31 +9,20 @@ import Heading from './components/Heading';
 import TodoPopup from './components/TodoPopup';
 import ToggleButton from './components/ToggleButton';
 
-interface TodoPopupData {
-    index: number | null;
-    item: CronsItemProps;
-    date: Date;
-}
-
 const App = () => {
     const crons = useCrons();
     const dispatch = useCronsDispatch();
 
     const [searchTerm, setSearchTerm] = useState('');
     const [isShowCompletedTodos, setIsShowCompletedTodos] = useState(false);
-    const [todoPopupData, setTodoPopupData] = useState<TodoPopupData | null>(
+    const [todoPopupData, setTodoPopupData] = useState<CronsItemProps | null>(
         null
     );
 
     const handleOpenTodoPopup = (
-        index: number | null,
         item: CronsItemProps
     ) => {
-        setTodoPopupData({
-            index,
-            item,
-            date: new Date(),
-        });
+        setTodoPopupData(item);
     };
 
     useEffect(() => {
@@ -52,21 +41,16 @@ const App = () => {
         index: number,
         date: Date,
         item: CronsItemProps
-    ) => {        
-        if (!isShow || !item.value.toString().includes(searchTerm)) return null;
+    ) => {
+        if (!isShow || !item.value.toString().toLowerCase().includes(searchTerm.toLowerCase())) return null;
 
         return (
             <TodoItem
                 key={index}
                 item={item}
-                index={index}
                 searchTerm={searchTerm}
                 onEditTodoItem={() => {
-                    setTodoPopupData({
-                        index,
-                        item,
-                        date,
-                    });
+                    setTodoPopupData(item);
                 }}
             />
         );
@@ -77,8 +61,7 @@ const App = () => {
             {todoPopupData && (
                 <TodoPopup
                     onClosePopup={() => setTodoPopupData(null)}
-                    index={todoPopupData.index}
-                    data={todoPopupData.item}
+                    data={todoPopupData}
                 />
             )}
 
@@ -109,7 +92,7 @@ const App = () => {
                                 placeholder="Search Cron"
                                 value={searchTerm}
                                 onChange={(event) =>
-                                    setSearchTerm(event.target.value)
+                                    setSearchTerm(event.target.value.toLowerCase())
                                 }
                             />
                             <button
@@ -126,7 +109,8 @@ const App = () => {
 
                         <button
                             onClick={() =>
-                                handleOpenTodoPopup(null, {
+                                handleOpenTodoPopup({
+                                    id: 0,
                                     value: '',
                                     isChecked: false,
                                     date: new Date(),

@@ -11,6 +11,7 @@ export interface cronsAction {
 }
 
 export interface CronsItemProps {
+    id: number;
     value: string;
     isChecked: boolean;
     date: Date;

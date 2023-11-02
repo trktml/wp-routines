@@ -9,6 +9,7 @@ export default function handler(
     req: NextApiRequest,
     res: NextApiResponse<ResponseData>
 ) {
+    let newCron = {};
     // sqlite get all crons from crons table column names are name and date
     const db = new sqlite3.Database('crons.sqlite', (err) => {
         if (err) {
@@ -22,18 +23,18 @@ export default function handler(
     });
 
     db.serialize(() => {
-        db.run(
+        db.get(
             `INSERT INTO crons (value, date, isChecked)
-            VALUES ("${
-                (Math.random() * 100000).toString()
-            }", "${new Date().toUTCString()}", 0);`,
+            VALUES ("${req.query['value']}", "${req.query['date']}", 0);`,
             (err: any, rows: ResponseData) => {
                 console.log(rows);
                 // return rows
-                res.status(200).send(rows);
+                newCron = rows;
             }
         );
     });
 
     db.close();
+    console.log(newCron);
+    res.status(200).send(newCron as any);
 }
