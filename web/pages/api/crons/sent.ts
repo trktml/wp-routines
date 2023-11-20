@@ -33,25 +33,18 @@ export default function handler(
                 } else if (!row) {
                     res.status(404).send({ message: "Cron not found." });
                 } else {
-                    const { value, date, frequency, id } = req.query;
                     db.run(
-                        "UPDATE crons SET value = ?, date = ? WHERE id = ?",
-                        [value || row.value, date || row.date, id],
+                        "UPDATE crons SET lastSent = ? WHERE id = ?",
+                        [new Date(), req.query.id],
                         (err) => {
                             if (err) {
                                 console.error(err.message);
                                 res.status(500).send({ message: "Error updating cron." });
                             } else {
-                                const updatedCron: CronsItemProps = {
-                                    id: row.id,
-                                    value: value || row.name,
-                                    date: date || row.date,
-                                    frequency: frequency || row.frequency,
-                                    lastSent: row.lastSent,
-                                };
+                                row.lastSent = new Date();
                                 res.status(200).send({
                                     message: "Cron updated successfully.",
-                                    crons: updatedCron,
+                                    crons: row,
                                 });
                             }
                             db.close();
@@ -61,6 +54,4 @@ export default function handler(
             }
         );
     });
-
-
 }

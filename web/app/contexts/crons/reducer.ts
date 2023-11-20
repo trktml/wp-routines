@@ -8,8 +8,9 @@ export const cronsReducer = (crons: CronsItemProps[], action: cronsAction) => {
                 {
                     id: action.payload.id,
                     value: action.payload.value,
-                    isChecked: false,
+                    frequency: action.payload.frequency,
                     date: action.payload.date,
+                    lastSent: action.payload.lastSent,
                 } as CronsItemProps,
             ];
         }
@@ -26,8 +27,9 @@ export const cronsReducer = (crons: CronsItemProps[], action: cronsAction) => {
                 item.id === action.payload.id
                     ? ({
                         value: action.payload.value,
-                        isChecked: action.payload.isChecked,
+                        frequency: action.payload.frequency,
                         date: action.payload.date,
+                        lastSent: action.payload.lastSent,
                     } as CronsItemProps)
                     : item
             );
